@@ -4,13 +4,12 @@ import product from './product';
 // import cart from './cart';
 import wishlist from './wishlist';
 
-const createRootReducer = () =>
-  combineReducers({
-    user: user.reducer,
-    product: product.reducer,
-    //   cart,
-    wishlist: wishlist.reducer,
-  });
+const rootReducer = combineReducers({
+  user: user.reducer,
+  product: product.reducer,
+  //   cart,
+  wishlist: wishlist.reducer,
+});
 
 export const actions = {
   ...user.actions,
@@ -18,4 +17,4 @@ export const actions = {
   ...wishlist.actions,
 };
 
-export default createRootReducer;
+export default rootReducer;

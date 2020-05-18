@@ -1,7 +1,7 @@
 import * as constant from './constants';
 
 export const initialState = {
-  user: [],
+  user: null,
   isLogin: false,
   token: null,
 };
@@ -20,9 +20,9 @@ const userReducer = (state = initialState, action) => {
       // const globalState = store.getState();
       return {
         ...state,
-        user: [],
+        user: null,
         isLogin: false,
-        token: [],
+        token: null,
       };
     default:
       return state;

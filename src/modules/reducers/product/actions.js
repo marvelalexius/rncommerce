@@ -1,6 +1,7 @@
 import * as constant from './constants';
 
 import axios from 'axios';
+import config from './../../../config';
 
 export const productRequest = () => {
   return dispatch => {
@@ -8,8 +9,8 @@ export const productRequest = () => {
       type: constant.PRODUCTS_REQUESTED,
     });
 
-    const Url = `${url}/api/products`;
-    axios.get(Url).then(res => {
+    const url = `${config.api.host}/api/products`;
+    axios.get(url).then(res => {
       return dispatch({
         type: constant.PRODUCTS_LOADED,
         products: res.data.data,
