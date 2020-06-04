@@ -47,9 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({
-  user: state.user.user,
-  products: state.product.products,
-});
-
-export default connect(mapStateToProps)(Home);
+export default connect()(Home);

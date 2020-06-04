@@ -19,22 +19,16 @@ import {
 } from '@react-native-community/google-signin';
 import config from './../../../config';
 import axios from 'axios';
+import api from './../../../utils/api';
 
 import {connect} from 'react-redux';
 import {actions} from './../../../modules/reducers';
 
 const _googleSignIn = async (dispatch, navigation) => {
-  const url = `${config.api.host}/api/auth/google/login`;
   GoogleSignin.configure({
     webClientId: config.google.client_id,
     offlineAccess: true,
   });
-
-  let postConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
 
   try {
     await GoogleSignin.hasPlayServices();
@@ -44,17 +38,12 @@ const _googleSignIn = async (dispatch, navigation) => {
 
     data.append('google_token', userInfo.idToken);
 
-    axios
-      .post(url, data, postConfig)
-      .then(res => {
-        const token = res.data.access_token;
-        const user = res.data.user;
-        dispatch(actions.userLoggedIn(user, token));
-        navigation.navigate('Home');
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const {data: res} = await api.post('/auth/google/login', data);
+    console.log(res);
+    const token = res.access_token;
+    const user = res.user;
+    dispatch(actions.userLoggedIn(user, token));
+    navigation.navigate('Home');
   } catch (error) {
     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
       Alert.alert('Sign in cancelled by User');
@@ -258,10 +247,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({
-  user: state.user.user,
-  isLogin: state.user.isLogin,
-  token: state.user.token,
-});
-
-export default connect(mapStateToProps)(Login);
+export default connect()(Login);

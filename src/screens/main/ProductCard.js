@@ -98,9 +98,11 @@ const ProductCard = ({product, user, dispatch}) => {
       </CardItem>
       <CardItem cardBody style={styles.cardBody}>
         <Body>
-          <Text>{product.name}</Text>
-          <Text>{product.description.substring(0, 10)}</Text>
-          <Text>{product.price}</Text>
+          <Text style={styles.productTitle}>{product.name}</Text>
+          <Text style={styles.productDescription}>
+            {product.description.substring(0, 10)}
+          </Text>
+          <Text style={styles.productPrice}>{product.price}</Text>
         </Body>
         <Right style={styles.bodyRightButton}>
           <Button
@@ -112,7 +114,7 @@ const ProductCard = ({product, user, dispatch}) => {
           </Button>
           <Button
             primary
-            onPress={() => _buyNow(product, user)}
+            onPress={() => _addToCart(product, dispatch)}
             style={styles.buyButton}>
             <Text>Buy</Text>
           </Button>
@@ -157,6 +159,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 40,
     borderRadius: 8,
+  },
+
+  productTitle: {
+    color: 'rgb(82, 82, 82)',
+    fontSize: 14,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+
+  productDescription: {
+    fontSize: 12,
+    color: 'rgb(82, 82, 82)',
+    lineHeight: 18,
+  },
+
+  productPrice: {
+    color: 'rgb(82, 82, 82)',
+    fontSize: 16,
+    lineHeight: 24,
   },
 });
 
