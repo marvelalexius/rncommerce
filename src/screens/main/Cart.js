@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Alert} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   Container,
   Text,
@@ -12,25 +12,42 @@ import {
   Left,
   Right,
   Body,
-  Badge,
 } from 'native-base';
-import {useForm} from 'react-hook-form';
 
 import {connect} from 'react-redux';
 import {actions} from './../../modules/reducers';
 
 import ProductCard from './ProductCard';
 
-const Home = ({dispatch, user, products, cart, navigation}) => {
+import api from './../../utils/api';
+import config from './../../config';
+
+const _checkout = async (cart, navigation, dispatch) => {
+  const {data: res} = await api.post('/transaction', cart);
+  console.log(res);
+  dispatch(actions.resetCart());
+  navigation.navigate('WebViewScreen', {
+    uri: `${config.api.host}/api/payment/transaction/${res.data}`,
+  });
+};
+
+const Cart = ({dispatch, cart, navigation}) => {
   useEffect(() => {
-    console.log('home loop ?');
-    dispatch(actions.productRequest());
+    console.log('cart loop ?');
     dispatch(actions.getCart());
   }, [dispatch]);
 
   return (
     <Container>
       <Header searchBar rounded>
+        <Left>
+          <Button transparent>
+            <Icon
+              name="arrow-back"
+              onPress={() => navigation.navigate('Home')}
+            />
+          </Button>
+        </Left>
         <Item style={styles.searchbar}>
           <Icon name="ios-search" />
           <Input placeholder="Search" />
@@ -38,30 +55,18 @@ const Home = ({dispatch, user, products, cart, navigation}) => {
         <Button transparent>
           <Text>Search</Text>
         </Button>
-        <Right>
-          <Button transparent>
-            {cart.length !== 0 ? (
-              <Badge style={styles.cartBadge}>
-                <Text>{cart.length}</Text>
-              </Badge>
-            ) : null}
-            <Icon name="cart" onPress={() => navigation.navigate('Cart')} />
-          </Button>
-          <Button transparent>
-            <Icon
-              name="heart"
-              onPress={() => navigation.navigate('Wishlist')}
-            />
-          </Button>
-        </Right>
       </Header>
       <Content>
-        <Text style={styles.title}>Welcome back, {user.name}</Text>
-        {products !== undefined
-          ? products.map((item, key) => {
-              return <ProductCard product={item} key={key} />;
-            })
-          : null}
+        {cart !== undefined ? (
+          cart.map((item, key) => {
+            return <ProductCard product={item} key={key} />;
+          })
+        ) : (
+          <Text>Whoops! you doesn't have any cart</Text>
+        )}
+        <Button onPress={() => _checkout(cart, navigation, dispatch)}>
+          <Text>Proceed To Payment</Text>
+        </Button>
       </Content>
     </Container>
   );
@@ -88,16 +93,10 @@ const styles = StyleSheet.create({
   searchbar: {
     width: 100,
   },
-  cartBadge: {
-    position: 'absolute',
-    zIndex: 1,
-  },
 });
 
 const mapStateToProps = state => ({
-  user: state.user.user,
-  products: state.product.products,
   cart: state.cart.products,
 });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Cart);

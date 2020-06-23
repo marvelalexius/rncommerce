@@ -6,19 +6,25 @@ export const initialState = {
 };
 
 // Reducers
-const productReducer = (state = initialState, action) => {
+const cartReducer = (state = initialState, action) => {
   switch (action.type) {
-    case constant.PRODUCTS_REQUESTED:
+    case constant.CART_REQUESTED:
       // const globalState = store.getState();
       return {
         ...state,
         isRequestingProducts: true,
       };
-    case constant.PRODUCTS_LOADED:
+    case constant.CART_LOADED:
       // const globalState = store.getState();
       return {
         ...state,
         products: action.products,
+        isRequestingProducts: false,
+      };
+    case constant.EMPTY_CART:
+      return {
+        ...state,
+        products: [],
         isRequestingProducts: false,
       };
     default:
@@ -26,4 +32,4 @@ const productReducer = (state = initialState, action) => {
   }
 };
 
-export default productReducer;
+export default cartReducer;

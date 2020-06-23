@@ -13,81 +13,45 @@ import {
   Text,
 } from 'native-base';
 import axios from 'axios';
+import numeral from 'numeral';
 
 import {connect} from 'react-redux';
 import {actions} from './../../modules/reducers';
 
-const _addToCart = (product, dispatch) => {
-  let cart = {
-    ...product,
-    quantity: 1,
-  };
-
-  dispatch(actions.addToCart(cart));
-};
-
-const _buyNow = (product, user) => {
+const _addToCart = (product, cart, dispatch) => {
   let carts = [];
-  let cart = {
-    ...product,
-    quantity: 1,
-  };
-  carts.push(cart);
-  console.log(carts);
-
-  let {token} = user;
-  const url = `${config.api.host}/api/transaction`;
-  console.log(url);
-
-  let config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-  };
-
-  axios
-    .post(url, carts, config)
-    .then(res => {
-      Alert.alert(res.data.message);
-    })
-    .catch(err => {
-      console.log(err);
+  if (cart.length !== 0) {
+    cart.map(cart_product => {
+      console.log(cart_product.pivot.quantity);
+      if (cart_product.id === product.id) {
+        carts.push({
+          ...product,
+          quantity: cart_product.pivot.quantity + 1,
+        });
+      } else {
+        carts.push({
+          ...product,
+          quantity: 1,
+        });
+      }
     });
+  } else {
+    carts.push({
+      ...product,
+      quantity: 1,
+    });
+  }
+
+  dispatch(actions.addToCart(carts));
+  Alert.alert('Added to Cart');
 };
 
 const _addToWishlist = (product, dispatch) => {
-  //   let {token, user} = this.props;
-  //   const Url = `${url}/api/wishlist`;
-  //   console.log(Url);
-  //   let config = {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: 'Bearer ' + token,
-  //     },
-  //   };
-  //   let data = {
-  //     user_id: user.id,
-  //     product_id: product.id,
-  //   };
-  //   axios
-  //     .post(Url, data, config)
-  //     .then(res => {
-  //       Alert.alert(res.data.message);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }
-  let wishlist = {
-    ...product,
-    quantity: 1,
-  };
-
-  dispatch(actions.addToWishlist(wishlist));
+  dispatch(actions.toggleWishlist(product.id));
+  Alert.alert('Added to wishlist');
 };
 
-const ProductCard = ({product, user, dispatch}) => {
+const ProductCard = ({product, cart, dispatch}) => {
   return (
     <Card>
       <CardItem header style={styles.cardCover}>
@@ -102,7 +66,9 @@ const ProductCard = ({product, user, dispatch}) => {
           <Text style={styles.productDescription}>
             {product.description.substring(0, 10)}
           </Text>
-          <Text style={styles.productPrice}>{product.price}</Text>
+          <Text style={styles.productPrice}>
+            {numeral(product.price).format('0,0')}
+          </Text>
         </Body>
         <Right style={styles.bodyRightButton}>
           <Button
@@ -114,7 +80,7 @@ const ProductCard = ({product, user, dispatch}) => {
           </Button>
           <Button
             primary
-            onPress={() => _addToCart(product, dispatch)}
+            onPress={() => _addToCart(product, cart, dispatch)}
             style={styles.buyButton}>
             <Text>Buy</Text>
           </Button>
@@ -183,8 +149,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  user: state.user.user,
-  wishlists: state.wishlist.wishlists,
+  cart: state.cart.products,
 });
 
 export default connect(mapStateToProps)(ProductCard);

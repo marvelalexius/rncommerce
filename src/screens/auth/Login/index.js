@@ -39,7 +39,6 @@ const _googleSignIn = async (dispatch, navigation) => {
     data.append('google_token', userInfo.idToken);
 
     const {data: res} = await api.post('/auth/google/login', data);
-    console.log(res);
     const token = res.access_token;
     const user = res.user;
     dispatch(actions.userLoggedIn(user, token));

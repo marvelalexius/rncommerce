@@ -1,20 +1,17 @@
 import * as constant from './constants';
 
-import axios from 'axios';
-import config from './../../../config';
+import api from './../../../utils/api';
 
 export const productRequest = () => {
-  return dispatch => {
+  return async dispatch => {
     dispatch({
       type: constant.PRODUCTS_REQUESTED,
     });
 
-    const url = `${config.api.host}/api/products`;
-    axios.get(url).then(res => {
-      return dispatch({
-        type: constant.PRODUCTS_LOADED,
-        products: res.data.data,
-      });
+    const {data: res} = await api.get('/products');
+    dispatch({
+      type: constant.PRODUCTS_LOADED,
+      products: res.data,
     });
   };
 };

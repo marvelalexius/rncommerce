@@ -9,6 +9,9 @@ import Login from './auth/Login';
 import Signup from './auth/Signup';
 import Home from './main/Home';
 import Profile from './main/Profile';
+import Wishlist from './main/Wishlist';
+import Cart from './main/Cart';
+import WebViewScreen from './main/WebViewScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -30,6 +33,9 @@ function MainStack() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Home" component={MyDrawer} />
+      <Stack.Screen name="Wishlist" component={Wishlist} />
+      <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
     </Stack.Navigator>
   );
 }
