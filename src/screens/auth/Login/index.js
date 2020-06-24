@@ -25,6 +25,7 @@ import {connect} from 'react-redux';
 import {actions} from './../../../modules/reducers';
 
 const _googleSignIn = async (dispatch, navigation) => {
+  console.log(config.api.host);
   GoogleSignin.configure({
     webClientId: config.google.client_id,
     offlineAccess: true,
