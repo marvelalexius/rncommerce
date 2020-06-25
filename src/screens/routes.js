@@ -12,6 +12,7 @@ import Profile from './main/Profile';
 import Wishlist from './main/Wishlist';
 import Cart from './main/Cart';
 import WebViewScreen from './main/WebViewScreen';
+import Logout from './auth/Logout';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,7 +20,7 @@ function MyDrawer() {
   return (
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="Logout" component={Logout} />
       {/* <Drawer.Screen name="Login" component={Login} /> */}
     </Drawer.Navigator>
   );
